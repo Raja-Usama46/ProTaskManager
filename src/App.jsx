@@ -10,7 +10,7 @@ import MainLayout from "./layout/MainLayout";
 const App = () => (
   <Routes>
     <Route element={<MainLayout />}>
-      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="/" element={<Navigate to="dashboard" />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/users" element={<Users />} />
