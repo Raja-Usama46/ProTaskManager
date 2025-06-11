@@ -26,9 +26,9 @@ const MainLayout = () => {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <Layout className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      <Layout className="min-h-screen  dark:bg-gray-900 text-black dark:text-white">
         <Sider theme="light">
-          <div className="text-center text-xl text-black bg-red-500 font-bold my-4">
+          <div className="text-center text-2xl text-black bg-red-500 font-bold my-4">
             TaskManager Pro
           </div>
           <Menu
