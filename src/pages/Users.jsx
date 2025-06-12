@@ -9,7 +9,6 @@ export default function Users() {
   const blockedUsers = useSelector((state) => state.auth.blockedUsers);
   const dispatch = useDispatch();
   const { data: users, isLoading } = FetchUsers();
-  console.log(first);
   const columns = [
     {
       title: "Name",
