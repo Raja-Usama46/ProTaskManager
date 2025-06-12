@@ -1,98 +1,86 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import client from "../api/client";
-import { Table, Button, Drawer, Tag, Switch, Space } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleBlock } from "../features/userSlice";
-import { EyeOutlined } from "@ant-design/icons";
+import { Table, Switch, Button, Drawer, Card, Tag } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleBlockUser } from "../store/authSlice";
+import { useState } from "react";
+import FetchUsers from "../hooks/FetchUsers";
 
-const Users = () => {
+export default function Users() {
   const [selectedUser, setSelectedUser] = useState(null);
+  const blockedUsers = useSelector((state) => state.auth.blockedUsers);
   const dispatch = useDispatch();
-  const blockedUsers = useSelector((state) => state.users.blockedUsers);
-
-  const { data: users = [], isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => client.get("/users").then((res) => res.data),
-  });
-
-  const isBlocked = (id) => blockedUsers.includes(id);
+  const { data: users, isLoading } = FetchUsers();
+  console.log(users, "users");
 
   const columns = [
-    { title: "Name", dataIndex: "name" },
-    { title: "Email", dataIndex: "email" },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <span className="font-medium">{text}</span>,
+    },
+    { title: "Email", dataIndex: "email", key: "email" },
     {
       title: "Status",
-      render: (_, record) =>
-        isBlocked(record.id) ? (
-          <Tag color="red">Blocked</Tag>
-        ) : (
-          <Tag color="green">Active</Tag>
-        ),
+      key: "status",
+      render: (_, user) => (
+        <Tag color={blockedUsers.includes(user.id) ? "red" : "green"}>
+          {blockedUsers.includes(user.id) ? "Blocked" : "Active"}
+        </Tag>
+      ),
     },
     {
       title: "Actions",
-      render: (_, record) => (
+      key: "actions",
+      render: (_, user) => (
         <Space>
-          <Button
-            icon={<EyeOutlined />}
-            onClick={() => setSelectedUser(record)}
-          />
           <Switch
-            checked={!isBlocked(record.id)}
-            onChange={() => dispatch(toggleBlock(record.id))}
+            checked={!blockedUsers.includes(user.id)}
+            onChange={() => dispatch(toggleBlockUser(user.id))}
           />
+          <Button onClick={() => setSelectedUser(user)}>Details</Button>
         </Space>
       ),
     },
   ];
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Users</h1>
+    <Card title="User Management" bordered={false}>
       <Table
-        loading={isLoading}
-        dataSource={users}
         columns={columns}
+        dataSource={users}
+        loading={isLoading}
         rowKey="id"
-        pagination={{ pageSize: 5 }}
+        scroll={{ x: true }}
       />
 
       <Drawer
-        open={!!selectedUser}
         title="User Details"
+        placement="right"
+        open={!!selectedUser}
         onClose={() => setSelectedUser(null)}
-        width={300}
+        width={400}
       >
         {selectedUser && (
-          <div className="space-y-2">
-            <p>
-              <strong>Name:</strong> {selectedUser.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedUser.email}
-            </p>
-            <p>
-              <strong>Username:</strong> {selectedUser.username}
-            </p>
-            <p>
-              <strong>Phone:</strong> {selectedUser.phone}
-            </p>
-            <p>
-              <strong>Website:</strong> {selectedUser.website}
-            </p>
-            <p>
-              <strong>Company:</strong> {selectedUser.company?.name}
-            </p>
-            <p>
-              <strong>Blocked:</strong>{" "}
-              {isBlocked(selectedUser.id) ? "Yes" : "No"}
-            </p>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium">Name</h3>
+              <p>{selectedUser.name}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Email</h3>
+              <p>{selectedUser.email}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Status</h3>
+              <Tag
+                color={blockedUsers.includes(selectedUser.id) ? "red" : "green"}
+              >
+                {blockedUsers.includes(selectedUser.id) ? "Blocked" : "Active"}
+              </Tag>
+            </div>
           </div>
         )}
       </Drawer>
-    </div>
+    </Card>
   );
-};
-
-export default Users;
+}

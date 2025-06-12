@@ -1,5 +1,5 @@
 {
-  "name": "pro-task-manager",
+  "name": "task-manager-pro",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,12 +14,15 @@
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/react-query": "^5.80.6",
     "antd": "^5.26.0",
-    "axios": "^1.9.0",
+    "formik": "^2.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
-    "tailwindcss": "^4.1.8"
+    "react-toastify": "^11.0.5",
+    "redux-persist": "^6.0.0",
+    "tailwindcss": "^4.1.8",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
